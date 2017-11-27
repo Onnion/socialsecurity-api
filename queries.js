@@ -49,9 +49,8 @@ function getSingleUser(req, res, next) {
 }
 
 function createUser(req, res, next) {
-  req.body.codigo_usuario = parseInt(req.body.codigo_usuario);
-  db.none('insert into usuarios(codigo_usuario, nome_usuario, email_usuario, senha_usuario, sexo)' +
-      'values(${codigo_usuario}, ${nome_usuario}, ${email_usuario}, ${senha_usuario}, ${sexo})',
+  db.none('insert into usuarios(nome_usuario, email_usuario, senha_usuario, sexo)' +
+      'values(${nome_usuario}, ${email_usuario}, ${senha_usuario}, ${sexo})',
     req.body)
     .then(function () {
       res.status(200)

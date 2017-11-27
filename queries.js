@@ -71,7 +71,7 @@ function verifyLogin(req, res, next) {
   let json = JSON.parse(req.params.paramsUser);
   let email_usuario = json.email_usuario;
   let senha_usuario = json.senha_usuario;
-  db.one('select * from usuarios where email_usuario = $1 and senha_usuario = $2',[email_usuario, senha_usuario])
+  db.any('select * from usuarios where email_usuario = $1 and senha_usuario = $2',[email_usuario, senha_usuario])
       .then(function (data) {
         res.status(200)
           .json({

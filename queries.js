@@ -65,10 +65,10 @@ function createUser(req, res, next) {
     });
 }
 
-/* Login queries functions
+/* Login queries functions */
 
 function verifyLogin(req, res, next) {
-  db.one('select * from usuarios where email_usuario = ${email_usuario} and senha_usuario = ${senha_usuario}',[req.params.email_usuario, req.params.senha_usuario])
+  db.one('select * from usuarios where email_usuario = $1 and senha_usuario = $2',[req.params.email_usuario, req.params.senha_usuario])
       .then(function (data) {
         res.status(200)
           .json({

@@ -240,7 +240,7 @@ module.exports = {
   getSingleUser: getSingleUser,
   createUser: createUser,
 
-  //verifyLogin: verifyLogin,
+  verifyLogin: verifyLogin,
 
   getAllOcurrences: getAllOcurrences,
   getSingleOcurrence: getSingleOcurrence,

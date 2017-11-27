@@ -81,7 +81,6 @@ function verifyLogin(req, res, next) {
         return next(err);
       });
 }
- */
 
 /*
 function updatePuppy(req, res, next) {

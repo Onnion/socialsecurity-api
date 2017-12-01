@@ -155,7 +155,7 @@ function getSingleOcurrence(req, res, next) {
 
 function getOcurrencePerTypes(req, res, next) {
   var codigoOcorrenciaType = parseInt(req.params.codigo_tipo_ocorrencia);
-  db.one('select * from ocorrencias where codigo_tipo_ocorrencia = $1', codigoOcorrenciaType)
+  db.any('select * from ocorrencias where codigo_tipo_ocorrencia = $1', codigoOcorrenciaType)
     .then(function (data) {
       res.status(200)
         .json({
@@ -170,9 +170,8 @@ function getOcurrencePerTypes(req, res, next) {
 }
 
 function createOcurrence(req, res, next) {
-  req.body.codigo_ocorrencia = parseInt(req.body.codigo_ocorrencia);
-  db.none('insert into ocorrencias(codigo_ocorrencia, codigo_usuario, codigo_tipo_ocorrencia, titulo_ocorrencia, endereco_ocorrencia, posicao_ocorrencia, data_ocorrencia, hora_ocorrencia, boletim_ocorrencia)' +
-    'values(${codigo_ocorrencia}, ${codigo_usuario}, ${codigo_tipo_ocorrencia}, ${titulo_ocorrencia}, ${endereco_ocorrencia}, ${posicao_ocorrencia}, ${data_ocorrencia}, ${hora_ocorrencia}, ${boletim_ocorrencia})',
+  db.none('insert into ocorrencias(codigo_usuario, codigo_tipo_ocorrencia, titulo_ocorrencia, endereco_ocorrencia, posicao_ocorrencia, data_ocorrencia, hora_ocorrencia, boletim_ocorrencia)' +
+    'values(${codigo_usuario}, ${codigo_tipo_ocorrencia}, ${titulo_ocorrencia}, ${endereco_ocorrencia}, ${posicao_ocorrencia}, ${data_ocorrencia}, ${hora_ocorrencia}, ${boletim_ocorrencia})',
     req.body)
     .then(function () {
       res.status(200)
@@ -220,9 +219,8 @@ function getSingleOcurrenceType(req, res, next) {
 }
 
 function createOcurrenceType(req, res, next) {
-  req.body.codigo_tipo_ocorrencia = parseInt(req.body.codigo_tipo_ocorrencia);
-  db.none('insert into tipos_ocorrencias(codigo_tipo_ocorrencia, descricao_ocorrencia)' +
-    'values(${codigo_tipo_ocorrencia}, ${descricao_ocorrencia})',
+  db.none('insert into tipos_ocorrencias(descricao_ocorrencia)' +
+    'values(${descricao_ocorrencia})',
     req.body)
     .then(function () {
       res.status(200)

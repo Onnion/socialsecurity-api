@@ -9,8 +9,14 @@ var users = require('./routes/users');
 var ocurrences = require('./routes/ocurrences');
 var ocurrenceTypes = require('./routes/ocurrence-types');
 var login = require('./routes/login');
+var cors = require('cors')
 
 var app = express();
+
+
+//CORS V02
+app.use(cors())
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,40 +37,40 @@ app.use('/', ocurrences);
 app.use('/', ocurrenceTypes);
 app.use('/', login);
 
-app.all('*', function (req, res, next) {
 
-  // Set CORS headers: allow all origins, methods, and headers: you may want to lock this down in a production environment
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
-  res.header("Access-Control-Allow-Headers", req.header('access-control-request-headers'));
-
-  if (req.method === 'OPTIONS') {
-    // CORS Preflight
-    res.send();
-  } else {
-    var targetURL = req.header('Target-URL');
-    if (!targetURL) {
-      res.send(500, {
-        error: 'There is no Target-Endpoint header in the request'
-      });
-      return;
-    }
-    request({
-        url: targetURL + req.url,
-        method: req.method,
-        json: req.body,
-        headers: {
-          'Authorization': req.header('Authorization')
-        }
-      },
-      function (error, response, body) {
-        if (error) {
-          console.error('error: ' + response.statusCode)
-        }
-        //                console.log(body);
-      }).pipe(res);
-  }
-});
+//CORS V01
+// app.all('*', function (req, res, next) {
+//   // Set CORS headers: allow all origins, methods, and headers: you may want to lock this down in a production environment
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
+//   res.header("Access-Control-Allow-Headers", req.header('access-control-request-headers'));
+//   if (req.method === 'OPTIONS') {
+//     // CORS Preflight
+//     res.send();
+//   } else {
+//     var targetURL = req.header('Target-URL');
+//     if (!targetURL) {
+//       res.send(500, {
+//         error: 'There is no Target-Endpoint header in the request'
+//       });
+//       return;
+//     }
+//     request({
+//         url: targetURL + req.url,
+//         method: req.method,
+//         json: req.body,
+//         headers: {
+//           'Authorization': req.header('Authorization')
+//         }
+//       },
+//       function (error, response, body) {
+//         if (error) {
+//           console.error('error: ' + response.statusCode)
+//         }
+//         //                console.log(body);
+//       }).pipe(res);
+//   }
+// });
 
 
 // catch 404 and forward to error handler

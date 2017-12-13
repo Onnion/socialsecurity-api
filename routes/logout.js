@@ -4,6 +4,6 @@ const db = require('../queries');
 
 
 /* GET login listing. */
-router.put('/api/login/:device', db.login);
+router.put('/api/logout/:device', db.logout);
 
 module.exports = router;

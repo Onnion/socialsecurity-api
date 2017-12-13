@@ -1,19 +1,12 @@
-var promise = require('bluebird');
+const promise = require('bluebird');
 
 var options = {
   // Initialization Options
   promiseLib: promise
 };
 
-var pgp = require('pg-promise')(options);
-const cn = {
-  host: 'ec2-23-21-189-181.compute-1.amazonaws.com', // 'localhost' is the default;
-  port: 5432, // 5432 is the default;
-  database: 'db32m348ed6gsi',
-  user: 'lfkmdwrycxmxrs',
-  password: '54c776c77f59fb4a8e86e2fec893078b0a8f8843a7dd27580475d4fcb454dc1d'
-};
-var connectionString = 'postgres://lfkmdwrycxmxrs:54c776c77f59fb4a8e86e2fec893078b0a8f8843a7dd27580475d4fcb454dc1d@ec2-23-21-189-181.compute-1.amazonaws.com:5432/db32m348ed6gsi?ssl=true';
+const pgp = require('pg-promise')(options);
+const connectionString = 'postgres://lfkmdwrycxmxrs:54c776c77f59fb4a8e86e2fec893078b0a8f8843a7dd27580475d4fcb454dc1d@ec2-23-21-189-181.compute-1.amazonaws.com:5432/db32m348ed6gsi?ssl=true';
 var db = pgp(connectionString);
 
 // add query functions
@@ -66,59 +59,94 @@ function createUser(req, res, next) {
 
 /* Login queries functions */
 
-function verifyLogin(req, res, next) {
-  let json = JSON.parse(req.params.paramsUser);
+function verifyUser(req, res, next) {
+  let json = JSON.parse(req.params.user);
   let email_usuario = json.email_usuario;
   let senha_usuario = json.senha_usuario;
-  db.any('select * from usuarios where email_usuario = $1 and senha_usuario = $2',[email_usuario, senha_usuario])
+  db.one('select codigo_usuario from usuarios where email_usuario = $1 and senha_usuario = $2',[email_usuario, senha_usuario])
       .then(function (data) {
         res.status(200)
           .json({
             status: 'success',
             data: data,
-            message: 'Retrieved ONE login'
+            message: 'Usuário cadastrado'
           });
       })
       .catch(function (err) {
-        return next(err);
+        res.status(500)
+        .json({
+          status: 'error',
+          message: 'Usuário não cadastrado'
+        });
       });
 }
 
-/*
-function updatePuppy(req, res, next) {
-  db.none('update pups set name=$1, breed=$2, age=$3, sex=$4 where id=$5',
-    [req.body.name, req.body.breed, parseInt(req.body.age),
-      req.body.sex, parseInt(req.params.id)])
+function login(req, res, next) {
+  let cod_usuario = parseInt(req.body.cod_usuario);
+  let device = req.params.device;
+  console.log(device)
+  db.none('update logs set cod_usuario = $1, status_log = \'logged\' where cod_device = $2 and status_log = \'not_logged\'',[cod_usuario,device])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'logado'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function logout(req, res, next) {
+  db.none('update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = ${device}',req.params)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'deslogado'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function verifyDevice(req, res, next) {
+  var device = req.params.device;
+  db.one('select * from logs where cod_device = $1', device)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'device cadastrado'
+        });
+    })
+    .catch(function (err) {
+      res.status(500)
+      .json({
+        status: 'error',
+        message: 'device não cadastrado'
+      });
+    });
+}
+
+function createDevice(req, res, next) {
+  db.none('insert into logs(cod_device, cod_usuario, status_log)' +
+      'values(${cod_device}, 1, \'not_logged\')',
+    req.body)
     .then(function () {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Updated puppy'
+          message: 'Inserted device'
         });
     })
     .catch(function (err) {
       return next(err);
     });
 }
-
-function removePuppy(req, res, next) {
-  var pupID = parseInt(req.params.id);
-  db.result('delete from pups where id = $1', pupID)
-    .then(function (result) {
-      // jshint ignore:start
-      res.status(200)
-        .json({
-          status: 'success',
-          message: `Removed ${result.rowCount} puppy`
-        });
-      // jshint ignore:end
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-*/
-
 
 /* Ocurrences queries functions*/
 
@@ -235,18 +263,22 @@ function createOcurrenceType(req, res, next) {
 }
 
 module.exports = {
-  getAllUsers: getAllUsers,
-  getSingleUser: getSingleUser,
-  createUser: createUser,
+  getAllUsers:            getAllUsers,
+  getSingleUser:          getSingleUser,
+  createUser:             createUser,
 
-  verifyLogin: verifyLogin,
+  verifyUser:             verifyUser,
+  verifyDevice:           verifyDevice,
+  createDevice:           createDevice,
+  login:                  login,
+  logout:                 logout,
 
-  getAllOcurrences: getAllOcurrences,
-  getSingleOcurrence: getSingleOcurrence,
-  getOcurrencePerTypes: getOcurrencePerTypes, 
-  createOcurrence: createOcurrence,
+  getAllOcurrences:       getAllOcurrences,
+  getSingleOcurrence:     getSingleOcurrence,
+  getOcurrencePerTypes:   getOcurrencePerTypes, 
+  createOcurrence:        createOcurrence,
 
-  getAllOcurrenceTypes: getAllOcurrenceTypes,
+  getAllOcurrenceTypes:   getAllOcurrenceTypes,
   getSingleOcurrenceType: getSingleOcurrenceType,
-  createOcurrenceType: createOcurrenceType,
+  createOcurrenceType:    createOcurrenceType,
 };

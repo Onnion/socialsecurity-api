@@ -60,7 +60,7 @@ function createUser(req, res, next) {
 /* Login queries functions */
 
 function verifyUser(req, res, next) {
-  let json = JSON.parse(req.params.user);
+  let json = JSON.parse(req.params.userJSON);
   let email_usuario = json.email_usuario;
   let senha_usuario = json.senha_usuario;
   db.one('select codigo_usuario from usuarios where email_usuario = $1 and senha_usuario = $2',[email_usuario, senha_usuario])
@@ -84,8 +84,8 @@ function verifyUser(req, res, next) {
 function login(req, res, next) {
   let cod_usuario = parseInt(req.body.cod_usuario);
   let device = req.params.device;
-  console.log(device)
-  db.none('update logs set cod_usuario = $1, status_log = \'logged\' where cod_device = $2 and status_log = \'not_logged\'',[cod_usuario,device])
+  let url ="update logs set cod_usuario = "+cod_usuario+", status_log = \'logged\' where cod_device = \'"+device+"\' and status_log = \'not_logged\'";
+  db.none(url)
     .then(function (data) {
       res.status(200)
         .json({
@@ -99,7 +99,7 @@ function login(req, res, next) {
 }
 
 function logout(req, res, next) {
-  db.none('update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = ${device}',req.params)
+  db.none('update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = ${device} status_log = \'logged\'',req.params)
     .then(function (data) {
       res.status(200)
         .json({
@@ -128,6 +128,28 @@ function verifyDevice(req, res, next) {
       .json({
         status: 'error',
         message: 'device não cadastrado'
+      });
+    });
+}
+
+function verifyLogin(req, res, next) {
+  let json = JSON.parse(req.params.user_deviceJSON);
+  let cod_usuario = json.cod_usuario;
+  let cod_device = json.cod_device;
+  db.one('select status_log from logs where cod_device = $1 and cod_usuario = $2 and status_log = \'logged\'',[cod_device,cod_usuario])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'usuario logado'
+        });
+    })
+    .catch(function (err) {
+      res.status(500)
+      .json({
+        status: 'error',
+        message: 'usuario não logado'
       });
     });
 }
@@ -272,6 +294,7 @@ module.exports = {
   createDevice:           createDevice,
   login:                  login,
   logout:                 logout,
+  verifyLogin:            verifyLogin,
 
   getAllOcurrences:       getAllOcurrences,
   getSingleOcurrence:     getSingleOcurrence,

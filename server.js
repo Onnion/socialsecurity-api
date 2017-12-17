@@ -8,10 +8,7 @@ const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const ocurrences = require('./routes/ocurrences');
 const ocurrenceTypes = require('./routes/ocurrence-types');
-const login = require('./routes/login');
-const logout = require('./routes/logout');
 const validationdevice = require('./routes/validationdevice');
-const validationuser = require('./routes/validationuser');
 
 const cors = require('cors')
 
@@ -39,10 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', users);
 app.use('/', ocurrences);
 app.use('/', ocurrenceTypes);
-app.use('/', login);
 app.use('/', validationdevice);
-app.use('/', validationuser);
-app.use('/', logout);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

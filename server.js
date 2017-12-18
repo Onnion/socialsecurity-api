@@ -1,17 +1,18 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-var users = require('./routes/users');
-var ocurrences = require('./routes/ocurrences');
-var ocurrenceTypes = require('./routes/ocurrence-types');
-var login = require('./routes/login');
-var cors = require('cors')
+const users = require('./routes/users');
+const ocurrences = require('./routes/ocurrences');
+const ocurrenceTypes = require('./routes/ocurrence-types');
+const validationdevice = require('./routes/validationdevice');
 
-var app = express();
+const cors = require('cors')
+
+const app = express();
 
 
 //CORS V02
@@ -35,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', users);
 app.use('/', ocurrences);
 app.use('/', ocurrenceTypes);
-app.use('/', login);
+app.use('/', validationdevice);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

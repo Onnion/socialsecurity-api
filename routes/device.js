@@ -5,7 +5,8 @@ var db = require('../queries');
 
 
 /* GET login listing. */
-router.get('/api/validate/device/:device', db.verifyDevice);
+router.get('/api/device/validate/:id_device', db.verifyDevice);
+router.post('/api/device', db.createDevice);
 
 module.exports = router;
 

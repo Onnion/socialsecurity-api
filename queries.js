@@ -37,7 +37,12 @@ function getSingleUser(req, res, next) {
         });
     })
     .catch(function (err) {
-      return next(err);
+      res.status(500)
+      .json({
+        status: 'error',
+        data: {},        
+        message: 'Usuáro não cadastrado'
+      });
     });
 }
 
@@ -45,10 +50,11 @@ function createUser(req, res, next) {
   db.none('insert into usuarios(nome_usuario, email_usuario, senha_usuario, sexo)' +
       'values(${nome_usuario}, ${email_usuario}, ${senha_usuario}, ${sexo})',
     req.body)
-    .then(function () {
+    .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
+          data: {},
           message: 'Inserted one user'
         });
     })
@@ -69,13 +75,14 @@ function verifyUser(req, res, next) {
           .json({
             status: 'success',
             data: data,
-            message: 'Usuário cadastrado'
+            message: 'Usuário c adastrado'
           });
       })
       .catch(function (err) {
         res.status(500)
         .json({
           status: 'error',
+          data: {},
           message: 'Usuário não cadastrado'
         });
       });
@@ -90,13 +97,15 @@ function login(req, res, next) {
       res.status(200)
         .json({
           status: 'success',
+          data: {},          
           message: 'logado'
         });
     })
     .catch(function (err) {
       return {
-        status: 'success',
-        message: 'device logado'
+        status: 'error',
+        data: {},        
+        message: 'login não efetuado'
       };
     });
 }
@@ -110,6 +119,7 @@ function logout(req, res, next) {
       res.status(200)
         .json({
           status: 'success',
+          data: {},                  
           message: 'deslogado'
         });
     })
@@ -133,6 +143,8 @@ function verifyDevice(req, res, next) {
       res.status(500)
       .json({
         status: 'error',
+        data: {},        
+        
         message: 'device não cadastrado'
       });
     });
@@ -168,6 +180,7 @@ function createDevice(req, res, next) {
       res.status(200)
         .json({
           status: 'success',
+          data: {},        
           message: 'Inserted device'
         });
     })

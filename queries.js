@@ -94,12 +94,18 @@ function login(req, res, next) {
         });
     })
     .catch(function (err) {
-      return next(err);
+      return {
+        status: 'success',
+        message: 'device logado'
+      };
     });
 }
 
 function logout(req, res, next) {
-  db.none('update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = ${device} status_log = \'logged\'',req.params)
+  let device = req.params.device.toString();
+  console.log(device)
+  let url = "update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = \'"+device+"\' and status_log = \'logged\'"
+  db.none(url)
     .then(function (data) {
       res.status(200)
         .json({

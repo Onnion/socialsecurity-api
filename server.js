@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const ocurrences = require('./routes/ocurrences');
 const ocurrenceTypes = require('./routes/ocurrence-types');
-const validationdevice = require('./routes/validationdevice');
+const validationdevice = require('./routes/validationDevice');
 
 const cors = require('cors')
 

@@ -129,7 +129,7 @@ function logout(req, res, next) {
 }
 
 function verifyDevice(req, res, next) {
-  var device = req.params.device;
+  var device = req.params.device.toString();
   let url ="select * from logs where cod_device = \'"+device+"\'";
   db.one(url)
     .then(function (data) {
@@ -145,7 +145,6 @@ function verifyDevice(req, res, next) {
       .json({
         status: 'error',
         data: {},        
-        
         message: 'device não cadastrado'
       });
     });

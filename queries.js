@@ -130,7 +130,8 @@ function logout(req, res, next) {
 
 function verifyDevice(req, res, next) {
   var device = req.params.device;
-  db.one('select * from logs where cod_device = $1', device)
+  let url ="select * from logs where cod_device = \'"+device+"\'";
+  db.one(url)
     .then(function (data) {
       res.status(200)
         .json({

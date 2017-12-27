@@ -45,7 +45,7 @@ https://socialsecurity.herokuapp.com/api/
 
 
 ### Validação de usuáiro
-``` GET: ``` ```users/validate/login/ ``` ```users/validate/login/ ```
+``` GET: ``` ```users/validate/user/ ``` ```{"email_usuario": "string","senha_usuario": "string"} ```
 
 | Status   | response |
 | -------- | ----------- |
@@ -98,3 +98,12 @@ https://socialsecurity.herokuapp.com/api/
 | -------- | ----------- |
 | success: | ```status: 'success', data: data, message: 'logado' ```|    
 | error: | ``` status: 'error', data: data, message: 'login não efetuado'``` |
+
+
+### Efetuar logout
+``` PUT: ``` ```users/logout/ ``` ```id_device ```
+
+| Status   | response |
+| -------- | ----------- |
+| success: | ```status: 'success', data: data, message: 'deslogado' ```|    
+

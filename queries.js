@@ -278,13 +278,28 @@ function updateContact(req, res, next){
 
 /* Ocurrences queries functions*/
 
-function getAllOcurrences(req, res, next) {
+function getAllOcurrencesMap(req, res, next) {
   db.any('SELECT * FROM ocorrencias as o JOIN tipos_ocorrencias as toc ON o.codigo_tipo_ocorrencia = toc.codigo_tipo_ocorrencia')
     .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
           data: googleMaps.export(data),
+          message: 'Retrieved ALL ocurrences'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAllOcurrencesFeed(req, res, next) {
+  db.any('SELECT * FROM ocorrencias as o JOIN tipos_ocorrencias as toc ON o.codigo_tipo_ocorrencia = toc.codigo_tipo_ocorrencia')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
           message: 'Retrieved ALL ocurrences'
         });
     })
@@ -407,7 +422,8 @@ module.exports = {
   createContact:          createContact,
   updateContact:          updateContact,
 
-  getAllOcurrences:       getAllOcurrences,
+  getAllOcurrencesMap:    getAllOcurrencesMap,
+  getAllOcurrencesFeed:    getAllOcurrencesFeed,
   getSingleOcurrence:     getSingleOcurrence,
   getOcurrencePerTypes:   getOcurrencePerTypes, 
   createOcurrence:        createOcurrence,

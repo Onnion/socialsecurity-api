@@ -88,6 +88,29 @@ function verifyUser(req, res, next) {
       });
 }
 
+/* Update User */
+function updateUser(req, res, next) {
+  let codigo_usuario = parseInt(req.params.codigo_usuario);
+  let user = req.body;
+  let url = "update usuarios set nome_usuario = \'" + user.nome_usuario + "\', email_usuario = \'" + user.email_usuario + "\', senha_usuario = \'" + user.senha_usuario +"\' where codigo_usuario = \'" + codigo_usuario + "\'";
+  db.none(url)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: {},
+          message: 'Dados atualizados com sucesso'
+        });
+    })
+    .catch(function (err) {
+      return {
+        status: 'error',
+        data: {},
+        message: 'Alteração não efetuada'
+      };
+    });
+}
+
 function login(req, res, next) {
   let cod_usuario = parseInt(req.body.cod_usuario);
   let device = req.params.device;
@@ -188,6 +211,70 @@ function createDevice(req, res, next) {
       return next(err);
     });
 }
+
+/* Contact queries functions */
+
+function getContact(req, res, next){
+  var codigoUsuario = parseInt(req.params.cod_usuario);
+  db.one('select * from contatos where cod_usuario = $1', codigoUsuario)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved ONE contact'
+        });
+    })
+    .catch(function (err) {
+      res.status(500)
+        .json({
+          status: 'error',
+          data: {},
+          message: 'No contacts'
+        });
+    });
+}
+
+function createContact(req, res, next){
+  db.none('insert into contatos(cod_usuario, nome_contato, numero_contato)' +
+    'values(${cod_usuario}, ${nome_contato}, ${numero_contato})',
+    req.body)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: {},
+          message: 'Inserted one contact'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function updateContact(req, res, next){
+  let cod_usuario = parseInt(req.params.cod_usuario);
+  let contact = req.body;
+  let url = "update contatos set nome_contato = \'" + contact.nome_contato + "\', numero_contato = \'" + contact.numero_contato + "\' where cod_usuario = \'" + cod_usuario + "\'";
+  db.none(url)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: {},
+          message: 'Dados atualizados com sucesso'
+        });
+    })
+    .catch (function (err) {
+      return {
+        status: 'error',
+        data: {},
+        message: 'Alteração não efetuada'
+      };
+    });
+  }
+
+
 
 /* Ocurrences queries functions*/
 
@@ -307,6 +394,7 @@ module.exports = {
   getAllUsers:            getAllUsers,
   getSingleUser:          getSingleUser,
   createUser:             createUser,
+  updateUser:             updateUser,
 
   verifyUser:             verifyUser,
   verifyDevice:           verifyDevice,
@@ -314,6 +402,10 @@ module.exports = {
   login:                  login,
   logout:                 logout,
   verifyLogin:            verifyLogin,
+
+  getContact:             getContact,
+  createContact:          createContact,
+  updateContact:          updateContact,
 
   getAllOcurrences:       getAllOcurrences,
   getSingleOcurrence:     getSingleOcurrence,

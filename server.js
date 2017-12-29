@@ -9,6 +9,7 @@ const users = require('./routes/users');
 const ocurrences = require('./routes/ocurrences');
 const ocurrenceTypes = require('./routes/ocurrence-types');
 const device = require('./routes/device');
+const contact = require('./routes/contact');
 
 const cors = require('cors')
 
@@ -37,6 +38,7 @@ app.use('/', users);
 app.use('/', ocurrences);
 app.use('/', ocurrenceTypes);
 app.use('/', device);
+app.use('/', contact);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

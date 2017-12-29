@@ -1,4 +1,5 @@
 const promise = require('bluebird');
+const googleMaps = require("./google-maps-utils");
 
 var options = {
   // Initialization Options
@@ -135,7 +136,6 @@ function login(req, res, next) {
 
 function logout(req, res, next) {
   let device = req.params.device.toString();
-  console.log(device)
   let url = "update logs set cod_usuario = 1, status_log = \'not_logged\' where cod_device = \'"+device+"\' and status_log = \'logged\'"
   db.none(url)
     .then(function (data) {
@@ -279,12 +279,12 @@ function updateContact(req, res, next){
 /* Ocurrences queries functions*/
 
 function getAllOcurrences(req, res, next) {
-  db.any('select * from ocorrencias')
+  db.any('SELECT * FROM ocorrencias as o JOIN tipos_ocorrencias as toc ON o.codigo_tipo_ocorrencia = toc.codigo_tipo_ocorrencia')
     .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
-          data: data,
+          data: googleMaps.export(data),
           message: 'Retrieved ALL ocurrences'
         });
     })
